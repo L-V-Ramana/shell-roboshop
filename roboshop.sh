@@ -12,7 +12,6 @@ do
   instance_id=$(aws ec2 run-instances \
 --image-id ami-09c813fb71547fc4f \
 --instance-type t3.micro \
---key-name demo-key \
 --security-group-ids sg-0eccd877a911ed1e3 \
 --tag-specifications 'ResourceType=instance,Tags=[{Key=Name,Value= $instance}]' ) 
 

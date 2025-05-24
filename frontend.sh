@@ -69,6 +69,6 @@ cp $path/nginx.config /etc/nginx/nginx.config  &>>$logfile
 validate $? path changed
 
 
-systemctl restrt nginx  &>>$logfile
+systemctl restart nginx  &>>$logfile
 validate $? "nginxrestart"
 

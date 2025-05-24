@@ -56,8 +56,9 @@ mkdir  -p /app &>>$logfile
 validate $? "craeting user folder"
 
 curl -o /tmp/catalogue.zip https://roboshop-artifacts.s3.amazonaws.com/catalogue-v3.zip &>>$logfile
-VALIDATE $? "Downloading Catalogue"
+validate $? "Downloading Catalogue"
 
+rm -rf /app/*
 cd /app
 validate $? "changed to directory"&>>$logfile
 

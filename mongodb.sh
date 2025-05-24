@@ -47,5 +47,3 @@ validate $? "ip update"
 systemctl restart mongod
 validate $? "mongodb restart"
 
-systemctl restart mongod &>>$LOG_FILE
-VALIDATE $? "Restarting MongoDB"

@@ -65,7 +65,7 @@ validate $? "unzipping frontend"
 
 rm -rf /etc/config/nginx.config
 
-cp $path/nginx.config /etc/config/nginx.config  &>>$logfile
+cp $path/nginx.config /etc/nginx/nginx.config  &>>$logfile
 validate $? path changed
 
 

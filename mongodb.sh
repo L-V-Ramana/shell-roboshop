@@ -9,7 +9,7 @@ logfolder="/var/log/roboshop-logss"
 # LOGS_FOLDER="/var/log/roboshop-logs"
 filename=$(echo $0|cut -d '.' -f1)
 logfile=$logfolder/$filename
-scripit_dir = $PWD
+scripit_dir=$PWD
 
 mkdir -p $logfolder
 

@@ -82,7 +82,7 @@ validate $? "copying service"
 
 cp $script_dir/mongo.repo /etc/yum.repos.d/mongo.repo &>>$logfile
 dnf install mongodb-mongosh -y &>>$logfile
-VALIDATE $? "Installing MongoDB Client"
+validate $? "Installing MongoDB Client"
  
 #  cp $script_dir/mongodb.repo /etc/yum.repo.d/mongodb.repo &>>$logfile
 

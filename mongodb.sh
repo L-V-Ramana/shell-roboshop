@@ -32,16 +32,16 @@ validate(){
 cp mongodb.repo /etc/yum.repos.d/mongodb.repo
 validate $? "copying mongo.repo"
 
-dnf install mongodb-org -y  &>>$LOG_FILE
+dnf install mongodb-org -y  &>>$logfile
 validate $? "mongodb instllation"
 
-systemctl start mongod  &>>$LOG_FILE
+systemctl start mongod  &>>$logfile
 validate $? "started mongodb"
 
-systemctl enable mongod  &>>$LOG_FILE
+systemctl enable mongod  &>>$logfile
 validate $? "enable mongodb"
 
-sed -i 's/127.0.0.1/0.0.0.0/g' /etc/mongod.conf   &>>$LOG_FILE
+sed -i 's/127.0.0.1/0.0.0.0/g' /etc/mongod.conf   &>>$logfile
 validate $? "ip update"
 
 systemctl restart mongod

@@ -21,6 +21,8 @@ validate(){
     if [ $1 -ne 0 ]
     then 
      echo -e " $r $2 falied $n"| tee -a $logfile
+     exit 1
+    
     else
         echo -e " $g $2 is successfull $n" | tee -a $logfile
     fi

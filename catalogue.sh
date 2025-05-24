@@ -62,7 +62,7 @@ rm -rf /app/*
 cd /app
 validate $? "changed to directory"&>>$logfile
 
-unzip catalogue-v3.zip&>>$logfile
+unzip /tmp/catalogue.zip &>>$logfile
 validate $? "unzipped project"
 
 dnf install npm -y &>>$logfile
@@ -71,7 +71,7 @@ validate $? "installling nodejs"
 cp $script_dir/catalogue.service "/etc/systemd/system/catalogue.service" &>>$logfile
 validate $? "copying service"
 
- systemctl daemon reload &>>$logfile
+ systemctl daemon-reload &>>$logfile
  validate $? "daemon reload"
 
  systemctl start catalogue &>>$logfile
@@ -80,8 +80,7 @@ validate $? "copying service"
  systemctl enable catalogue &>>$logfile
  validate $? "enable catalogue"
 
- dnf install mongodb -sh &>>$logfile
-
+ 
  cp $script_dir/mongodb.repo /etc/yum.repo.d/mongodb.repo &>>$logfile
 
  dnf install mongodb-mongosh -y  &>>$logfile

@@ -26,6 +26,7 @@ validate(){
       echo -e " $g $2 excuted successfully $n" | tee -a $logfile
     else
         echo -e "$R $2 failed $n"  | tee -a $logfile
+        exit 1
 fi
 }
 
@@ -89,5 +90,5 @@ validate $? "Installing MongoDB Client"
 #  dnf install mongodb-mongosh -y  &>>$logfile
 #  validate $? "installing mongodb"
 
- mongosh --host mongodb.ramana.site </app/db/master-data.js
+  mongosh --host mongodb.ramana.site </app/db/master-data.js
  validate $? "loading mongodb"

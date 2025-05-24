@@ -5,8 +5,8 @@ r="\e[31m"
 g="\e[32m"
 y="\e33m"
 n="\e[0m".
-logfolder="/var/log/robo-shop"
-script= echo $0| cut -d '.' -f1
+logfolder="/var/log/roboshop-logs"
+script= $(echo $0| cut -d '.' -f1)
 logfile="$logfolder/$scrpt.log"
 path=$PWD
 if [ $userid -ne 0 ]

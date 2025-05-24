@@ -29,13 +29,13 @@ validate(){
 fi
 }
 
-dnf disable nodejs -y &>>$logfile
+dnf module disable nodejs -y &>>$logfile
 validate $? "disbaling nodejs"
 
-dnf list nodejs &>>$logfile
+dnf  module list nodejs &>>$logfile
 validate $? "printing list"
 
-dnf enable list nodejs:20 -y &>>logfile
+dnf module enable list nodejs:20 -y &>>$logfile
 validate $? "enabling nodejs"
 
 dnf install nodejs -y &>>$logfile

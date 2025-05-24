@@ -27,7 +27,6 @@ validate(){
     else
         echo -e "$R $2 failed $n"  | tee -a $logfile
 fi
-    fi
 }
 
 dnf disable nodejs -y &>>$logfile

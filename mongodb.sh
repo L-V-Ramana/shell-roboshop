@@ -1,6 +1,6 @@
 #!/bin/bash
 
-userid=(id-u)
+userid=$(id-u)
 r=\e[31m
 g=\e[32m
 y=\e[33m

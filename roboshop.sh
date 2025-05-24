@@ -10,7 +10,9 @@ script_name= echo $0|cut -d '.' -f1
 
 #for instance in ${INSTANCES[@]} passing from array
 
-for instance in ${INSTANCES[@]} #for isntances passing like function arguments 
+# for instance in ${INSTANCES[@]} #for inatances passing in script as a array 
+
+for instance in $@ #for instaneses passing as function arguments
 do 
     
 INSTANCE_ID=$(aws ec2 run-instances --image-id $AMI_ID --instance-type t3.micro --security-group-ids $Sg_ID --tag-specifications "ResourceType=instance,Tags=[{Key=Name, Value=$instance}]" --query "Instances[0].InstanceId" --output text)

@@ -80,11 +80,14 @@ validate $? "copying service"
  systemctl enable catalogue &>>$logfile
  validate $? "enable catalogue"
 
+cp $script_dir/mongo.repo /etc/yum.repos.d/mongo.repo &>>$logfile
+dnf install mongodb-mongosh -y &>>$logfile
+VALIDATE $? "Installing MongoDB Client"
  
- cp $script_dir/mongodb.repo /etc/yum.repo.d/mongodb.repo &>>$logfile
+#  cp $script_dir/mongodb.repo /etc/yum.repo.d/mongodb.repo &>>$logfile
 
- dnf install mongodb-mongosh -y  &>>$logfile
- validate $? "installing mongodb"
+#  dnf install mongodb-mongosh -y  &>>$logfile
+#  validate $? "installing mongodb"
 
  mongosh --host mongodb.ramana.site </app/db/master-data.js
  validate $? "loading mongodb"

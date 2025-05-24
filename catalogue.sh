@@ -21,7 +21,7 @@ else
 fi
 
 validate(){
-    if [ $1 eq 0 ] 
+    if [ $1 -eq 0 ] 
     then 
       echo -e " $g $2 excuted successfully $n" | tee -a $logfile
     else

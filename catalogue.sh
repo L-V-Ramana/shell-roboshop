@@ -14,18 +14,18 @@ mkdir -p $logfolder
 
 if [ $id -ne 0 ]
 then 
- echo " $R Error: $n please login with root access" | tee -a $logfile
+ echo -e " $R Error: $n please login with root access" | tee -a $logfile
  exit 1
 else
- echo "$g logged in with root access $n" | tee -a $logfile
+ echo -e "$g logged in with root access $n" | tee -a $logfile
 fi
 
 validate(){
     if [ $1 eq 0 ] 
     then 
-      echo " $g $2 excuted successfully $n" | tee -a $logfile
+      echo -e " $g $2 excuted successfully $n" | tee -a $logfile
     else
-        echo "$R $2 failed $n"  | tee -a $logfile
+        echo -e "$R $2 failed $n"  | tee -a $logfile
 fi
     fi
 }

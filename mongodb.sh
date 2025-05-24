@@ -9,6 +9,7 @@ logfolder="/var/log/roboshop-logss"
 # LOGS_FOLDER="/var/log/roboshop-logs"
 filename=$(echo $0|cut -d '.' -f1)
 logfile=$logfolder/$filename
+scripit_dir = $PWD
 
 mkdir -p $logfolder
 
@@ -28,7 +29,7 @@ validate(){
         echo "$2 failed"| tee -a $logfile
     fi
 }
-cp mongodb.repo /etc/yum.repo.d/mongo.repo
+cp mongodb.repo /etc/yum.repos.d/mongodb.repo
 validate $? "copying mongo.repo"
 
 dnf install mongodb-org -y  &>>$LOG_FILE

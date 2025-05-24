@@ -9,6 +9,9 @@ logfolder="/var/log/roboshop-logs"
 script= $(echo $0 | cut -d '.' -f1)
 logfile="$logfolder/$script.log"
 path=$PWD
+
+mkdir -p $logfolder
+
 if [ $userid -ne 0 ]
 then 
     echo -e "$r error : $n run with root access"| tee -a $logfile
@@ -28,15 +31,18 @@ validate(){
     fi
 }
 dnf module disable nginx -y &>>$logfile
+# dnf module disable nginx -y
 validate $? "disbaleing nginx"
 
 dnf module list nginx  &>>$logfile
 validate $? "listing nginx"
 
 dnf module enable nginx:1.24 -y  &>>$logfile
+# dnf module enable nginx:1.24 -y
 validate $? "enable nginx"
 
 dnf install nginx -y  &>>$logfile
+# dnf install nginx
 validate $? "instalation of nginx"
 
 systemctl start nginx  &>>$logfile

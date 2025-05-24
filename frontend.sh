@@ -58,8 +58,10 @@ curl -o /tmp/frontend.zip https://roboshop-artifacts.s3.amazonaws.com/frontend-v
 validate $? "downloading frontend.zip"
 
 cd /usr/share/nginx/html &>>$logfile
+validate $? "cahnge directory frontend"
+
 unzip /tmp/front.zip &>>$logfile
-validate $? "unxzipping frontend"
+validate $? "unzipping frontend"
 
 rm -rf /etc/config/nginx.config
 

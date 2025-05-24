@@ -7,7 +7,7 @@ y="\e[33m"
 n="\e[0m"
 logfolder="/var/log/roboshop-logs"
 filename=$(echo $0| cut -d '.' -f1)
-logfile=$logfolder/$filename
+logfile=$logfolder/$filename.log
 script_dir=$PWD
 
 mkdir -p $logfolder
@@ -26,7 +26,7 @@ validate(){
       echo -e " $g $2 excuted successfully $n" | tee -a $logfile
     else
         echo -e "$R $2 failed $n"  | tee -a $logfile
-        exit 1
+        exit 1 
 fi
 }
 

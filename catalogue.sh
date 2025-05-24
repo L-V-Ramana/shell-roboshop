@@ -12,7 +12,7 @@ script_dir=$PWD
 
 mkdir -p $logfolder
 
-if [ $id -ne 0 ]
+if [ $userid -ne 0 ]
 then 
  echo -e " $R Error: $n please login with root access" | tee -a $logfile
  exit 1

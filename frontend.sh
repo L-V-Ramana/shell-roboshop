@@ -45,11 +45,11 @@ dnf install nginx -y  &>>$logfile
 # dnf install nginx
 validate $? "instalation of nginx"
 
-systemctl start nginx  &>>$logfile
-validate $? "nginx start"
-
 systemctl enable nginx  &>>$logfile
 validate $? "enable nginx"
+
+systemctl start nginx  &>>$logfile
+validate $? "nginx start"
 
 rm -rf /usr/share/nginx/html/* &>>$logfile
 validate $? "removed home html"

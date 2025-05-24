@@ -26,7 +26,7 @@ else
      RECORD_NAME=$Domain_name
 fi
     echo "$instance IP address: $IP"
-    RECORD_NAME=$instance.$Domain_name
+    # RECORD_NAME=$instance.$Domain_name
 
      aws route53 change-resource-record-sets \
     --hosted-zone-id $Zone_ID \

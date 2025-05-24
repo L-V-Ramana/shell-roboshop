@@ -52,7 +52,7 @@ else
     echo "user already exists"| tee -a $logfile
 fi
 
-mkdir - p /app &>>$logfile
+mkdir  -p /app &>>$logfile
 validate $? "craeting user folder"
 
 curl -o /tmp/catalogue.zip https://roboshop-artifacts.s3.amazonaws.com/catalogue-v3.zip &>>$logfile

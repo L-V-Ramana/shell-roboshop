@@ -6,7 +6,7 @@ g="\e[32m"
 y="\e33m"
 n="\e[0m".
 logfolder="/var/log/roboshop-logs"
-script= $(echo $0|cut -d '.' -f1)
+script= $(echo $0 | cut -d '.' -f1)
 logfile="$logfolder/$script.log"
 path=$PWD
 if [ $userid -ne 0 ]

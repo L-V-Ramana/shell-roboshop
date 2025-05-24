@@ -20,10 +20,31 @@ INSTANCE_ID=$(aws ec2 run-instances --image-id $AMI_ID --instance-type t3.micro 
 if [ $instance != "frontend" ]
 then 
     IP=$(aws ec2 describe-instances --instance-ids $INSTANCE_ID --query "Reservations[0].Instances[0].PrivateIpAddress" --output text)
+    RECORD_NAME=$instance.$Domain_name
 else
      IP=$(aws ec2 describe-instances --instance-ids $INSTANCE_ID --query "Reservations[0].Instances[0].PublicIpAddress" --output text)
+     RECORD_NAME=$Domain_name
 fi
     echo "$instance IP address: $IP"
+    RECORD_NAME=$instance.$Domain_name
+
+     aws route53 change-resource-record-sets \
+    --hosted-zone-id $Zone_ID \
+    --change-batch '
+    {
+        "Comment": "Creating or Updating a record set for cognito endpoint"
+        ,"Changes": [{
+        "Action"              : "UPSERT"
+        ,"ResourceRecordSet"  : {
+            "Name"              : "'$RECORD_NAME'"
+            ,"Type"             : "A"
+            ,"TTL"              : 1
+            ,"ResourceRecords"  : [{
+                "Value"         : "'$IP'"
+            }]
+        }
+        }]
+    }'
 done
 
 # aws ec2 run-instances \

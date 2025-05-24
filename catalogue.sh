@@ -6,7 +6,7 @@ g="e/[32m"
 y="e/[33m"
 n="e/[0m"
 logfolder="/var/log/roboshop-logs"
-filename= $(echo $0| cut -d '.' -f1)
+filename=$(echo $0| cut -d '.' -f1)
 logfile=$logfolder/$filename
 script_dir=$PWD
 

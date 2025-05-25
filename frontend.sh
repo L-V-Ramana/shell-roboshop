@@ -1,67 +1,74 @@
-
 #!/bin/bash
 
-USERID=$(id -u)
-R="\e[31m"
-G="\e[32m"
-Y="\e[33m"
-N="\e[0m"
-LOGS_FOLDER="/var/log/roboshop-logs"
-SCRIPT_NAME=$(echo $0 | cut -d "." -f1)
-LOG_FILE="$LOGS_FOLDER/$SCRIPT_NAME.log"
-SCRIPT_DIR=$PWD
+userid=$(id -u)
+r="\e[31m"
+g="\e[32m"
+y="\e33m"
+n="\e[0m".
+logfolder="/var/log/roboshop-logs"
+script= $(echo $0 | cut -d '.' -f1)
+logfile="$logfolder/$script.log"
+path=$PWD
 
-mkdir -p $LOGS_FOLDER
-echo "Script started executing at: $(date)" | tee -a $LOG_FILE
+mkdir -p $logfolder
 
-# check the user has root priveleges or not
-if [ $USERID -ne 0 ]
-then
-    echo -e "$R ERROR:: Please run this script with root access $N" | tee -a $LOG_FILE
-    exit 1 #give other than 0 upto 127
-else
-    echo "You are running with root access" | tee -a $LOG_FILE
-fi
+if [ $userid -ne 0 ]
+then 
+    echo -e "$r error : $n run with root access"| tee -a $logfile
+    exit 1
+else 
+    echo -e " $g you are logged in with root access $n "| tee -a $logfile
+fi 
 
-# validate functions takes input as exit status, what command they tried to install
-VALIDATE(){
-    if [ $1 -eq 0 ]
-    then
-        echo -e "$2 is ... $G SUCCESS $N" | tee -a $LOG_FILE
+validate(){
+    if [ $1 -ne 0 ]
+    then 
+     echo -e " $r $2 falied $n"| tee -a $logfile
+     exit 1
+    
     else
-        echo -e "$2 is ... $R FAILURE $N" | tee -a $LOG_FILE
-        exit 1
+        echo -e " $g $2 is successfull $n" | tee -a $logfile
     fi
 }
+dnf module disable nginx -y &>>$logfile
+# dnf module disable nginx -y
+validate $? "disbaleing nginx"
 
-dnf module disable nginx -y &>>$LOG_FILE
-VALIDATE $? "Disabling Default Nginx"
+dnf module list nginx  &>>$logfile
+validate $? "listing nginx"
 
-dnf module enable nginx:1.24 -y &>>$LOG_FILE
-VALIDATE $? "Enabling Nginx:1.24"
+dnf module enable nginx:1.24 -y  &>>$logfile
+# dnf module enable nginx:1.24 -y
+validate $? "enable nginx"
 
-dnf install nginx -y &>>$LOG_FILE
-VALIDATE $? "Installing Nginx"
+dnf install nginx -y  &>>$logfile
+# dnf install nginx
+validate $? "instalation of nginx"
 
-systemctl enable nginx  &>>$LOG_FILE
-systemctl start nginx 
-VALIDATE $? "Starting Nginx"
+systemctl enable nginx  &>>$logfile
+validate $? "enable nginx"
 
-rm -rf /usr/share/nginx/html/* &>>$LOG_FILE
-VALIDATE $? "Removing default content"
+systemctl start nginx  &>>$logfile
+validate $? "nginx start"
 
-curl -o /tmp/frontend.zip https://roboshop-artifacts.s3.amazonaws.com/frontend-v3.zip &>>$LOG_FILE
-VALIDATE $? "Downloading frontend"
+rm -rf /usr/share/nginx/html/* &>>$logfile
+validate $? "removed home html"
 
-cd /usr/share/nginx/html 
-unzip /tmp/frontend.zip &>>$LOG_FILE
-VALIDATE $? "unzipping frontend"
+curl -o /tmp/frontend.zip https://roboshop-artifacts.s3.amazonaws.com/frontend-v3.zip &>>$logfile
+validate $? "downloading frontend.zip"
 
-rm -rf /etc/nginx/nginx.conf &>>$LOG_FILE
-VALIDATE $? "Remove default nginx conf"
+cd /usr/share/nginx/html &>>$logfile
+validate $? "change directory frontend"
 
-cp $SCRIPT_DIR/nginx.config /etc/nginx/nginx.conf
-VALIDATE $? "Copying nginx.conf"
+unzip /tmp/frontend.zip &>>$logfile
+validate $? "unzipping frontend"
 
-systemctl restart nginx 
-VALIDATE $? "Restarting nginx"
+rm -rf /etc/config/nginx.config
+
+cp $path/nginx.config /etc/nginx/nginx.conf  &>>$logfile
+validate $? path changed
+
+
+systemctl restart nginx  &>>$logfile
+validate $? "nginxrestart"
+

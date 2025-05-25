@@ -1,84 +1,99 @@
-
 #!/bin/bash
 
-USERID=$(id -u)
+userid=$(id -u)
 R="\e[31m"
-G="\e[32m"
-Y="\e[33m"
-N="\e[0m"
-LOGS_FOLDER="/var/log/roboshop-logs"
-SCRIPT_NAME=$(echo $0 | cut -d "." -f1)
-LOG_FILE="$LOGS_FOLDER/$SCRIPT_NAME.log"
-SCRIPT_DIR=$PWD
+g="\e[32m"
+y="\e[33m"
+n="\e[0m"
+logfolder="/var/log/roboshop-logs"
+filename=$(echo $0| cut -d '.' -f1)
+logfile=$logfolder/$filename.log
+script_dir=$PWD
 
-mkdir -p $LOGS_FOLDER
-echo "Script started executing at: $(date)" | tee -a $LOG_FILE
+mkdir -p $logfolder
 
-# check the user has root priveleges or not
-if [ $USERID -ne 0 ]
-then
-    echo -e "$R ERROR:: Please run this script with root access $N" | tee -a $LOG_FILE
-    exit 1 #give other than 0 upto 127
+if [ $userid -ne 0 ]
+then 
+ echo -e " $R Error: $n please login with root access" | tee -a $logfile
+ exit 1
 else
-    echo "You are running with root access" | tee -a $LOG_FILE
+ echo -e "$g logged in with root access $n" | tee -a $logfile
 fi
 
-# validate functions takes input as exit status, what command they tried to install
-VALIDATE(){
-    if [ $1 -eq 0 ]
-    then
-        echo -e "$2 is ... $G SUCCESS $N" | tee -a $LOG_FILE
+validate(){
+    if [ $1 -eq 0 ] 
+    then 
+      echo -e " $g $2 excuted successfully $n" | tee -a $logfile
     else
-        echo -e "$2 is ... $R FAILURE $N" | tee -a $LOG_FILE
-        exit 1
-    fi
+        echo -e "$R $2 failed $n"  | tee -a $logfile
+        exit 1 
+fi
 }
 
-dnf module disable nodejs -y &>>$LOG_FILE
-VALIDATE $? "Disabling default nodejs"
+dnf module disable nodejs -y &>>$logfile
+validate $? "disbaling nodejs"
 
-dnf module enable nodejs:20 -y &>>$LOG_FILE
-VALIDATE $? "Enabling nodejs:20"
+dnf  module list nodejs &>>$logfile
+validate $? "printing list"
 
-dnf install nodejs -y &>>$LOG_FILE
-VALIDATE $? "Installing nodejs:20"
+dnf module enable nodejs:20 -y &>>$logfile
+validate $? "enabling nodejs"
+
+dnf install nodejs -y &>>$logfile
+validate $? "installing nodejs"
 
 id roboshop
-if [ $? -ne 0 ]
+
+
+if [ $? != 0 ]
 then
-    useradd --system --home /app --shell /sbin/nologin --comment "roboshop system user" roboshop &>>$LOG_FILE
-    VALIDATE $? "Creating roboshop system user"
+ useradd --system --home /app --shell /sbin/nologin --comment "roboshop system user" roboshop &>>$logfile 
+ validate $? "creating roboshop user"
 else
-    echo -e "System user roboshop already created ... $Y SKIPPING $N"
+    echo "user already exists"| tee -a $logfile
 fi
 
-mkdir -p /app 
-VALIDATE $? "Creating app directory"
+mkdir  -p /app &>>$logfile
+validate $? "craeting user folder"
 
-curl -o /tmp/catalogue.zip https://roboshop-artifacts.s3.amazonaws.com/catalogue-v3.zip &>>$LOG_FILE
-VALIDATE $? "Downloading Catalogue"
+curl -o /tmp/catalogue.zip https://roboshop-artifacts.s3.amazonaws.com/catalogue-v3.zip &>>$logfile
+validate $? "Downloading Catalogue"
 
 rm -rf /app/*
-cd /app 
-unzip /tmp/catalogue.zip &>>$LOG_FILE
-VALIDATE $? "unzipping catalogue"
+cd /app
+validate $? "changed to directory"&>>$logfile
 
-npm install &>>$LOG_FILE
-VALIDATE $? "Installing Dependencies"
+unzip /tmp/catalogue.zip &>>$logfile
+validate $? "unzipped project"
 
-cp $SCRIPT_DIR/catalogue.service /etc/systemd/system/catalogue.service
-VALIDATE $? "Copying catalogue service"
+dnf install npm -y &>>$logfile
+validate $? "installling nodejs"
 
-systemctl daemon-reload &>>$LOG_FILE
-systemctl enable catalogue  &>>$LOG_FILE
-systemctl start catalogue
-VALIDATE $? "Starting Catalogue"
+cp $script_dir/catalogue.service /etc/systemd/system/catalogue.service &>>$logfile
+validate $? "copying service"
 
-cp $SCRIPT_DIR/mongodb.repo /etc/yum.repos.d/mongo.repo 
-dnf install mongodb-mongosh -y &>>$LOG_FILE
-VALIDATE $? "Installing MongoDB Client"
+ systemctl daemon-reload &>>$logfile
+ validate $? "daemon reload"
 
-STATUS=$(mongosh --host mongodb.ramana.site --eval 'db.getMongo().getDBNames().indexOf("catalogue")')
+ systemctl start catalogue &>>$logfile
+ validate $? "starting catalogue"
+
+ systemctl enable catalogue &>>$logfile
+ validate $? "enable catalogue"
+
+cp $script_dir/mongodb.repo /etc/yum.repos.d/mongo.repo &>>$logfile
+dnf install mongodb-mongosh -y &>>$logfile
+validate $? "Installing MongoDB Client"
+ 
+#  cp $script_dir/mongodb.repo /etc/yum.repo.d/mongodb.repo &>>$logfile
+
+#  dnf install mongodb-mongosh -y  &>>$logfile
+#  validate $? "installing mongodb"
+
+#   mongosh --host mongodb.ramana.site </app/db/master-data.js
+#  validate $? "loading mongodb"
+
+ STATUS=$(mongosh --host mongodb.ramana.site --eval 'db.getMongo().getDBNames().indexOf("catalogue")')
 if [ $STATUS -lt 0 ]
 then
     mongosh --host mongodb.ramana.site </app/db/master-data.js &>>$LOG_FILE

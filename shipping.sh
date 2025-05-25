@@ -18,6 +18,9 @@ else
     echo " $g Running with root access $n"| tee -a $logfile
 fi
 
+echo "Please enter root password to setup"
+read -s MYSQL_ROOT_PASSWORD
+
 validate(){
     if [ $1 -eq 0 ]
     then 
@@ -47,26 +50,44 @@ validate $? "making dir"
 curl -o /tmp/shipping.zip https://roboshop-artifacts.s3.amazonaws.com/shipping-v3.zip
 validate $? "downloading roboshop"
 
-rm -rf app/*
+rm -rf app/* &>>$logfile
 validate $? "cleaning /app dir"
 cd /app
 
-unzip /tmp/shipping.zip
+unzip /tmp/shipping.zip &>>$logfile
 validate $? "unzipping shipping"
 
-mvn clean package 
+mvn clean package &>>$logfile
 validate $? "installing maven"
+
+mv target/shipping-1.0.jar shipping.jar  &>>$logfile
+validate $? "Moving and renaming Jar file"
 
 cp $path/shipping.service /etc/systemd/system/shipping.service
 
-systemctl daemon-reload
-vVALIDATE $? "Daemon Realod"
+systemctl daemon-reload &>>$logfile
+validate $? "Daemon Realod"
 
-systemctl enable shipping 
-VALIDATE $? "Enabling Shipping"
+systemctl enable shipping &>>$logfile
+validate $? "Enabling Shipping"
 
-systemctl start shipping
-VALIDATE $? "Starting Shipping"
+systemctl start shipping &>>$logfile
+validate $? "Starting Shipping"
 
 dnf install mysql -y  &>>$logfile
-VALIDATE $? "Install MySQL"
+validate $? "Install MySQL"
+
+mysql -h mysql.daws84s.site -u root -p$MYSQL_ROOT_PASSWORD -e 'use cities' &>>$logfile
+
+if [ $? -ne 0 ]
+then
+    mysql -h mysql.daws84s.site -uroot -p$MYSQL_ROOT_PASSWORD < /app/db/schema.sql &>>$logfile
+    mysql -h mysql.daws84s.site -uroot -p$MYSQL_ROOT_PASSWORD < /app/db/app-user.sql  &>>$logfile
+    mysql -h mysql.daws84s.site -uroot -p$MYSQL_ROOT_PASSWORD < /app/db/master-data.sql &>>$logfile
+    validate $? "Loading data into MySQL"
+else
+    echo -e "Data is already loaded into MySQL ... $Y SKIPPING $N"
+fi
+
+systemctl restart shipping &>>$logfile
+validate $? "Restart shipping"

@@ -57,6 +57,7 @@ validate $? "unzipping  app"
 npm install &>>$logfile
 validate $? "insatlling app "
 
+id roboshop
 if [$? -eq 0]
 then
      useradd --system --home /app --shell /sbin/nologin --comment "roboshop system user" roboshop  &>>$logfile

@@ -90,5 +90,14 @@ validate $? "Installing MongoDB Client"
 #  dnf install mongodb-mongosh -y  &>>$logfile
 #  validate $? "installing mongodb"
 
-  mongosh --host mongodb.ramana.site </app/db/master-data.js
- validate $? "loading mongodb"
+#   mongosh --host mongodb.ramana.site </app/db/master-data.js
+#  validate $? "loading mongodb"
+
+ STATUS=$(mongosh --host mongodb.daws84s.site --eval 'db.getMongo().getDBNames().indexOf("catalogue")')
+if [ $STATUS -lt 0 ]
+then
+    mongosh --host mongodb.daws84s.site </app/db/master-data.js &>>$LOG_FILE
+    validate $? "Loading data into MongoDB"
+else
+    echo -e "Data is already loaded ... $Y SKIPPING $N"
+fi

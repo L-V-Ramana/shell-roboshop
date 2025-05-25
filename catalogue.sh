@@ -69,7 +69,7 @@ validate $? "unzipped project"
 dnf install npm -y &>>$logfile
 validate $? "installling nodejs"
 
-cp $script_dir/catalogue.service "/etc/systemd/system/catalogue.service" &>>$logfile
+cp $script_dir/catalogue.service /etc/systemd/system/catalogue.service &>>$logfile
 validate $? "copying service"
 
  systemctl daemon-reload &>>$logfile
